@@ -1,0 +1,67 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  labels:
+    {{- include "katalyst-webhook.labels" . | nindent 4 }}
+  name: katalyst-mutating-webhook-configuration
+webhooks:
+  - admissionReviewVersions:
+      - v1beta1
+    clientConfig:
+      caBundle: {{ .Files.Get "keys/ca.crt" | b64enc }}
+      service:
+        name: {{ include "katalyst-webhook.fullname" . }}
+        namespace: {{ .Release.Namespace }}
+        path: /pod
+    failurePolicy: Ignore
+    matchPolicy: Exact
+    name: pod-mutation.katalyst.kubewharf.io
+    namespaceSelector: {}
+    objectSelector: {}
+    reinvocationPolicy: Never
+    rules:
+      - apiGroups:
+          - '*'
+        apiVersions:
+          - '*'
+        operations:
+          - CREATE
+        resources:
+          - pods
+        scope: '*'
+    sideEffects: None
+    timeoutSeconds: 30
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  labels:
+    {{- include "katalyst-webhook.labels" . | nindent 4 }}
+  name: vpa-validation
+webhooks:
+  - admissionReviewVersions:
+      - v1beta1
+    clientConfig:
+      caBundle: {{ .Files.Get "keys/ca.crt" | b64enc }}
+      service:
+        name: {{ include "katalyst-webhook.fullname" . }}
+        namespace: {{ .Release.Namespace }}
+        path: /vpa
+    failurePolicy: Fail
+    matchPolicy: Exact
+    name: vpa-validation.katalyst.kubewharf.io
+    namespaceSelector: {}
+    objectSelector: {}
+    rules:
+      - apiGroups:
+          - autoscaling.katalyst.kubewharf.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - UPDATE
+          - CREATE
+        resources:
+          - katalystverticalpodautoscalers
+        scope: '*'
+    sideEffects: None
+    timeoutSeconds: 30

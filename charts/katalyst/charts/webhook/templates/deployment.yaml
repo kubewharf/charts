@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "katalyst-webhook.fullname" . }}
+  labels:
+    {{- include "katalyst-webhook.labels" . | nindent 4 }}
+    app: "katalyst-webhook"
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "katalyst-webhook.selectorLabels" . | nindent 6 }}
+      app: "katalyst-webhook"
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "katalyst-webhook.selectorLabels" . | nindent 8 }}
+        app: "katalyst-webhook"
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "katalyst-webhook.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          command:
+            - {{ default "katalyst-webhook" .Values.customCommand }}
+          args:
+            - --tls-cert-file={{ index .Values.customArgs "tls-cert-file" | default "/tmp/katalyst-webhook/certs/tls.crt" }}
+            - --tls-private-key-file={{ index .Values.customArgs "tls-private-key-file" | default "/tmp/katalyst-webhook/certs/tls.key" }}
+            - --tls-sni-cert-key={{ index .Values.customArgs "tls-sni-cert-key" | default "/tmp/katalyst-webhook/certs/tls.crt,/tmp/katalyst-webhook/certs/tls.key" }}
+          {{- range $key, $value := .Values.customArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          image: "{{ .Values.global.image.registry | default .Values.image.registry }}/{{ .Values.global.image.repository | default .Values.image.repository }}:{{ .Values.global.image.tag | default .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{  .Values.global.image.pullPolicy | default .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /tmp/katalyst-webhook/certs
+              name: webhook-cert-dir
+              readOnly: true
+          ports:
+            - name: metrics
+              containerPort: {{ (index .Values.customArgs "generic-endpoint" | default 9316) }}
+              protocol: TCP
+            - name: secure-port
+              containerPort: {{ (index .Values.customArgs "secure-port" | default 443) }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: webhook-cert-dir
+          secret:
+            defaultMode: 420
+            secretName: webhook-server-cert

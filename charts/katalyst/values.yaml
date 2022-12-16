@@ -1,0 +1,14 @@
+
+global:
+  # Overrides all components' image by global image
+  image: {}
+
+katalyst-agent: {}
+
+katalyst-controller: {}
+
+katalyst-webhook: {}
+
+katalyst-scheduler: {}
+
+katalyst-metric: {}

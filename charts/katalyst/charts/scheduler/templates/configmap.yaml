@@ -1,0 +1,75 @@
+apiVersion: v1
+data:
+  scheduler-config.yaml: |-
+    apiVersion: kubescheduler.config.k8s.io/v1beta3
+    kind: KubeSchedulerConfiguration
+    {{- if .Values.leaderElection.leaderElect }}
+    leaderElection:
+      leaderElect: true
+      resourceLock: {{ default "leases" .Values.leaderElection.resourceLock }}
+      resourceName: {{ default (include "katalyst-scheduler.fullname" .) .Values.leaderElection.resourceName}}
+      resourceNamespace: {{ default .Release.Namespace .Values.leaderElection.resourceNamespace}}
+    {{- end }}
+    profiles:
+      - schedulerName: {{ .Values.schedulerName }}
+        plugins:
+          preFilter:
+            enabled:
+              - name: QoSAwareNodeResourcesFit
+          filter:
+            enabled:
+              - name: QoSAwareNodeResourcesFit
+          score:
+            enabled:
+              - name: QoSAwareNodeResourcesFit
+                weight: 1
+              - name: QoSAwareNodeResourcesBalancedAllocation
+                weight: 1
+            disabled:
+              - name: NodeResourcesFit
+              - name: NodeResourcesBalancedAllocation
+          reserve:
+            enabled:
+              - name: QoSAwareNodeResourcesFit
+        pluginConfig:
+          - name: NodeResourcesFit
+            args:
+              ignoredResourceGroups:
+                - katalyst.kubewharf.io
+          - name: QoSAwareNodeResourcesFit
+            args:
+              scoringStrategy:
+                type: {{ .Values.schedulerPolicy.scoringStrategy.type | default "LeastAllocated" }}
+                {{- with .Values.schedulerPolicy.scoringStrategy.requestedToCapacityRatioParam }}
+                requestedToCapacityRatioParam:
+                  {{- toYaml . | nindent 18 }}
+                {{- end }}
+                {{- with .Values.schedulerPolicy.scoringStrategy.reclaimedRequestedToCapacityRatio }}
+                reclaimedRequestedToCapacityRatio:
+                  {{- toYaml . | nindent 18 }}
+                {{- end }}
+                resources:
+                  - name: cpu
+                    weight: 1
+                  - name: memory
+                    weight: 1
+                reclaimedResources:
+                  - name: "katalyst.kubewharf.io/reclaimed_millicpu"
+                    weight: 1
+                  - name: "katalyst.kubewharf.io/reclaimed_memory"
+                    weight: 1
+          - name: QoSAwareNodeResourcesBalancedAllocation
+            args:
+              resources:
+                - name: cpu
+                  weight: 1
+                - name: memory
+                  weight: 1
+              reclaimedResources:
+                - name: "katalyst.kubewharf.io/reclaimed_millicpu"
+                  weight: 1
+                - name: "katalyst.kubewharf.io/reclaimed_memory"
+                  weight: 1
+kind: ConfigMap
+metadata:
+  name: katalyst-scheduler-config

@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "katalyst-metric.fullname" . }}
+  labels:
+    {{- include "katalyst-metric.labels" . | nindent 4 }}
+    app: "katalyst-metric"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "katalyst-metric.selectorLabels" . | nindent 6 }}
+      app: "katalyst-metric"
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "katalyst-metric.selectorLabels" . | nindent 8 }}
+        app: "katalyst-metric"
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "katalyst-metric.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          command:
+            - {{ default "katalyst-metric" .Values.customCommand }}
+          args:
+          {{- if (index .Values.customArgs "leader-elect" | default true ) }}
+            - --leader-elect-resource-name={{ index .Values.customArgs "leader-elect-resource-name" | default (include "katalyst-metric.fullname" .)}}
+            - --leader-elect-resource-namespace={{ index .Values.customArgs "leader-elect-resource-namespace" | default .Release.Namespace }}
+          {{- end }}
+          {{- range $key, $value := .Values.customArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          image: "{{ .Values.global.image.registry | default .Values.image.registry }}/{{ .Values.global.image.repository | default .Values.image.repository }}:{{ .Values.global.image.tag | default .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{  .Values.global.image.pullPolicy | default .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.service.targetPortName }}
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+            - name: metrics
+              containerPort: {{ (index .Values.customArgs "generic-endpoint" | default 9316) }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

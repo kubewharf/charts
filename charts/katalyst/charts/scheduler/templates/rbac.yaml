@@ -1,0 +1,173 @@
+{{- if .Values.serviceAccount.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "katalyst-scheduler.serviceAccountName" . }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - pods/status
+      - nodes
+      - namespaces
+    verbs:
+      - list
+      - watch
+      - get
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - pods/binding
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - endpoints
+      - events
+    verbs:
+      - get
+      - list
+      - watch
+      - update
+      - create
+      - patch
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - create
+      - get
+      - update
+  - apiGroups:
+      - storage.k8s.io
+    resources:
+      - storageclasses
+      - csistoragecapacities
+      - csinodes
+      - csidrivers
+    verbs:
+      - list
+      - watch
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - replicationcontrollers
+      - persistentvolumes
+      - persistentvolumeclaims
+      - services
+    verbs:
+      - list
+      - watch
+      - get
+  - apiGroups:
+      - apps
+    resources:
+      - statefulsets
+      - replicasets
+    verbs:
+      - list
+      - watch
+      - get
+  - apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
+    verbs:
+      - list
+      - watch
+      - get
+  - apiGroups:
+      - "*"
+    resources:
+      - events
+    verbs:
+      - list
+      - watch
+      - get
+      - patch
+      - create
+  - apiGroups:
+      - node.katalyst.kubewharf.io
+    resources:
+      - customnoderesources
+    verbs:
+      - list
+      - watch
+      - get
+      - patch
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - create
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "katalyst-scheduler.serviceAccountName" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "katalyst-scheduler.serviceAccountName" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "katalyst-scheduler.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    {{- include "katalyst-scheduler.labels" . | nindent 4 }}
+  name: {{ include "katalyst-scheduler.serviceAccountName" . }}:system:auth-reader
+  namespace: "kube-system"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: extension-apiserver-authentication-reader
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "katalyst-scheduler.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    {{- include "katalyst-scheduler.labels" . | nindent 4 }}
+  name: {{ include "katalyst-scheduler.serviceAccountName" . }}:system:auth-delegator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "katalyst-scheduler.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "katalyst-scheduler.serviceAccountName" . }}
+  labels:
+    {{- include "katalyst-scheduler.labels" . | nindent 4 }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

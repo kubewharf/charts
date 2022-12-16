@@ -1,0 +1,82 @@
+{{- if .Values.serviceAccount.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "katalyst-agent.serviceAccountName" . }}
+rules:
+  - apiGroups:
+      - node.katalyst.kubewharf.io
+    resources:
+      - customnoderesources
+      - customnoderesources/status
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - create
+  - apiGroups:
+      - config.katalyst.kubewharf.io
+    resources:
+      - "*"
+    verbs:
+      - get
+      - list
+  - apiGroups:
+      - ""
+    resources:
+      - pods/eviction
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - create
+      - delete
+      - patch
+      - update
+      - get
+  - apiGroups:
+      - "*"
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+      - get
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "katalyst-agent.serviceAccountName" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "katalyst-agent.serviceAccountName" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "katalyst-agent.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "katalyst-agent.serviceAccountName" . }}
+  labels:
+    {{- include "katalyst-agent.labels" . | nindent 4 }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

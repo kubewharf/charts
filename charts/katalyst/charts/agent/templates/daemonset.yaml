@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "katalyst-agent.fullname" . }}
+  labels:
+    {{- include "katalyst-agent.labels" . | nindent 4 }}
+    app: "katalyst-agent"
+spec:
+  selector:
+    matchLabels:
+      {{- include "katalyst-agent.selectorLabels" . | nindent 6 }}
+      app: "katalyst-agent"
+  minReadySeconds: 10
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 20%
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "katalyst-agent.selectorLabels" . | nindent 8 }}
+        app: "katalyst-agent"
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "katalyst-agent.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          command:
+            - {{ default "katalyst-agent" .Values.customCommand }}
+          args:
+            - --plugin-registration-dir={{ .Values.hostMountPaths.katalystLibDir }}/plugin-socks
+            - --plugin-manager-checkpoint-dir={{ .Values.hostMountPaths.katalystLibDir }}/plugin-checkpoint
+            - --pod-resources-server-endpoint={{ .Values.hostMountPaths.kubeletLibDir }}/pod-resources/kubelet.sock
+            - --locking-file={{ index .Values.customArgs "locking-file" | default ( printf "/tmp/%s_lock" (include "katalyst-agent.fullname" . | replace "-" "_") ) }}
+            - --node-name=$(MY_NODE_NAME)
+        {{- range $key, $value := .Values.customArgs }}
+            - --{{ $key }}={{ $value }}
+        {{- end }}
+          env:
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          image: "{{ .Values.global.image.registry | default .Values.image.registry }}/{{ .Values.global.image.repository | default .Values.image.repository }}:{{ .Values.global.image.tag | default .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{  .Values.global.image.pullPolicy | default .Values.image.pullPolicy }}
+          ports:
+            - name: metrics
+              containerPort: {{ (index .Values.customArgs "generic-endpoint" | default 9316) }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: {{ .Values.hostMountPaths.kubeletLibDir }}
+              name: host-kubelet-lib-dir
+            - mountPath: {{ .Values.hostMountPaths.runtimeSocketDir }}
+              name: host-runtime-socket-dir
+              readOnly: true
+            - mountPath: {{ .Values.hostMountPaths.katalystLibDir }}
+              name: host-katalyst-lib-dir
+            - mountPath: /sys
+              name: host-sys-dir
+              readOnly: true
+            - mountPath: /tmp
+              name: host-tmp-dir
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      priorityClassName: system-node-critical
+      restartPolicy: Always
+      hostNetwork: true
+      volumes:
+        - hostPath:
+            path: {{ .Values.hostMountPaths.kubeletLibDir }}
+            type: ""
+          name: host-kubelet-lib-dir
+        - hostPath:
+            path: {{ .Values.hostMountPaths.katalystLibDir }}
+            type: DirectoryOrCreate
+          name: host-katalyst-lib-dir
+        - hostPath:
+            path: {{ .Values.hostMountPaths.runtimeSocketDir }}
+            type: ""
+          name: host-runtime-socket-dir
+        - hostPath:
+            path: /sys
+            type: ""
+          name: host-sys-dir
+        - hostPath:
+            path: /tmp
+            type: ""
+          name: host-tmp-dir
+

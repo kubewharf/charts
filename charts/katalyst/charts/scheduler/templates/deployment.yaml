@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "katalyst-scheduler.fullname" . }}
+  labels:
+    {{- include "katalyst-scheduler.labels" . | nindent 4 }}
+    app: "katalyst-scheduler"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "katalyst-scheduler.selectorLabels" . | nindent 6 }}
+      app: "katalyst-scheduler"
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "katalyst-scheduler.selectorLabels" . | nindent 8 }}
+        app: "katalyst-scheduler"
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      serviceAccountName: {{ include "katalyst-scheduler.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          command:
+            - {{ default "katalyst-scheduler" .Values.customCommand }}
+          args:
+            - --config=/etc/kubernetes/scheduler/scheduler-config.yaml
+          {{- range $key, $value := .Values.customArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          image: "{{ .Values.global.image.registry | default .Values.image.registry }}/{{ .Values.global.image.repository | default .Values.image.repository }}:{{ .Values.global.image.tag | default .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{  .Values.global.image.pullPolicy | default .Values.image.pullPolicy }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 10259
+              scheme: HTTPS
+            initialDelaySeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 10259
+              scheme: HTTPS
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /etc/kubernetes/scheduler
+              name: scheduler-config
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: katalyst-scheduler-config
+          name: scheduler-config
