@@ -36,7 +36,7 @@ spec:
             - {{ default "katalyst-agent" .Values.customCommand }}
           args:
             - --plugin-registration-dir={{ .Values.hostMountPaths.katalystLibDir }}/plugin-socks
-            - --plugin-manager-checkpoint-dir={{ .Values.hostMountPaths.katalystLibDir }}/plugin-checkpoint
+            - --checkpoint-manager-directory={{ .Values.hostMountPaths.katalystLibDir }}/plugin-checkpoint
             - --pod-resources-server-endpoint={{ .Values.hostMountPaths.kubeletLibDir }}/pod-resources/kubelet.sock
             - --locking-file={{ index .Values.customArgs "locking-file" | default ( printf "/tmp/%s_lock" (include "katalyst-agent.fullname" . | replace "-" "_") ) }}
             - --node-name=$(MY_NODE_NAME)
