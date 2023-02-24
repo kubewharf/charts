@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  katalyst:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2023-02-24T04:10:41.246090714Z"
+    description: A Helm chart for Katalyst
+    digest: 614f1f9f7a017b502269f25ce2ceb8562fb884b402b96404187301267996c3b8
+    name: katalyst
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/katalyst-0.1.0/katalyst-0.1.0.tgz
+    version: 0.1.0
+generated: "2023-02-24T04:10:41.246198713Z"
