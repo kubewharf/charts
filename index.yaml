@@ -11,4 +11,15 @@ entries:
     urls:
     - https://github.com/kubewharf/charts/releases/download/katalyst-0.1.0/katalyst-0.1.0.tgz
     version: 0.1.0
-generated: "2023-02-24T04:10:41.246198713Z"
+  malachite:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2023-04-27T03:05:18.634579589Z"
+    description: A Helm chart for Malachite
+    digest: ed42ec6bd001573c4168ce0084a9de14874d266bf59f890d637683ad5e41ba75
+    name: malachite
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/malachite-0.1.0/malachite-0.1.0.tgz
+    version: 0.1.0
+generated: "2023-04-27T03:05:18.634583889Z"
