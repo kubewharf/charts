@@ -5,16 +5,16 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.9.0
   creationTimestamp: null
-  name: evictionconfigurations.config.katalyst.kubewharf.io
+  name: adminqosconfigurations.config.katalyst.kubewharf.io
 spec:
   group: config.katalyst.kubewharf.io
   names:
-    kind: EvictionConfiguration
-    listKind: EvictionConfigurationList
-    plural: evictionconfigurations
+    kind: AdminQoSConfiguration
+    listKind: AdminQoSConfigurationList
+    plural: adminqosconfigurations
     shortNames:
-    - ec
-    singular: evictionconfiguration
+    - aqc
+    singular: adminqosconfiguration
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -42,8 +42,8 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: EvictionConfiguration is the Schema for the configuration API
-          used by eviction
+        description: AdminQoSConfiguration is the Schema for the configuration API
+          used by admin QoS policy
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -58,78 +58,57 @@ spec:
           metadata:
             type: object
           spec:
-            description: EvictionConfigurationSpec defines the desired state of EvictionConfiguration
+            description: AdminQoSConfigurationSpec defines the desired state of AdminQoSConfiguration
             properties:
               config:
-                description: Config is custom field for eviction configuration all
-                  configuration crd should contain a field named with `config`
+                description: Config is custom field for admin qos configuration
                 properties:
-                  evictionPluginsConfig:
-                    description: EvictionPluginsConfig is the config for all eviction
-                      plugins
+                  reclaimedResourceConfig:
+                    description: ReclaimedResourceConfig is a configuration for reclaim
+                      resource
                     properties:
-                      memoryEvictionPluginConfig:
-                        description: MemoryEvictionPluginConfig is the config for
-                          memory eviction plugin
-                        properties:
-                          enableNumaLevelDetection:
-                            description: EnableNumaLevelDetection is whether to enable
-                              numa-level detection
-                            type: boolean
-                          enableRssOveruseDetection:
-                            description: EnableRSSOveruseDetection is whether to enable
-                              pod-level rss overuse detection
-                            type: boolean
-                          enableSystemLevelDetection:
-                            description: EnableSystemLevelDetection is whether to
-                              enable system-level detection
-                            type: boolean
-                          gracePeriod:
-                            description: GracePeriod is the grace period of memory
-                              eviction
-                            format: int64
-                            type: integer
-                          numaEvictionRankingMetrics:
-                            description: NumaEvictionRankingMetrics is the metrics
-                              used to rank pods for eviction at the NUMA level
-                            items:
-                              type: string
-                            type: array
-                          numaFreeBelowWatermarkTimesThreshold:
-                            description: NumaFreeBelowWatermarkTimesThreshold is the
-                              threshold for the number of times NUMA's free memory
-                              falls below the watermark
-                            type: integer
-                          rssOveruseRateThreshold:
-                            description: RssOveruseRateThreshold is the threshold
-                              for the rate of rss
-                            type: number
-                          systemEvictionRankingMetrics:
-                            description: SystemEvictionRankingMetrics is the metrics
-                              used to rank pods for eviction at the system level
-                            items:
-                              type: string
-                            type: array
-                          systemKswapdRateExceedTimesThreshold:
-                            description: SystemKswapdRateExceedCountThreshold is the
-                              threshold for the number of times the kswapd reclaiming
-                              rate exceeds the threshold
-                            type: integer
-                          systemKswapdRateThreshold:
-                            description: NumaFreeBelowWatermarkTimesThreshold is the
-                              threshold for the rate of kswapd reclaiming rate
-                            type: integer
+                      enableReclaim:
+                        description: EnableReclaim is a flag to enable reclaim resource,
+                          if true, reclaim resource will be enabled, which means reclaim
+                          resource will be reported to custom node resource and support
+                          colocation between reclaimed_cores pod and other pods, otherwise,
+                          reclaim resource will be disabled.
+                        type: boolean
+                      minReclaimedResourceForReport:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: MinReclaimedResourceForReport is a minimum reclaimed
+                          resource for report to custom node resource, which means
+                          if reclaimed resource is less than MinReclaimedResourceForReport,
+                          then reclaimed resource will be reported as MinReclaimedResourceForReport.
                         type: object
-                      reclaimedResourcesEvictionPluginConfig:
-                        description: ReclaimedResourcesEvictionPluginConfig is the
-                          config for reclaimed resources eviction plugin
-                        properties:
-                          evictionThreshold:
-                            additionalProperties:
-                              type: number
-                            description: EvictionThreshold eviction threshold rate
-                              for reclaimed resources
-                            type: object
+                      reservedResourceForAllocate:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: ReservedResourceForAllocate is a resource reserved
+                          for non-reclaimed_cores pods that are not allocated to reclaimed_cores
+                          pods. It is used to set aside some buffer resources to avoid
+                          sudden increase in resource requirements.
+                        type: object
+                      reservedResourceForReport:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: ReservedResourceForReport is a reserved resource
+                          for report to custom node resource, which is used to prevent
+                          reclaim resource from being requested by reclaimed_cores
+                          pods.
                         type: object
                     type: object
                 type: object
