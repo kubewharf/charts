@@ -42,5 +42,5 @@ customArgs:
   controllers: "*"
   dry-run: false
   leader-elect: true
-  lifecycle-enable-eviction: true
+  healthz-enabled: true
   v: 2
