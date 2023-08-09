@@ -40,6 +40,7 @@ spec:
             - --pod-resources-server-endpoint={{ .Values.hostMountPaths.kubeletLibDir }}/pod-resources/kubelet.sock
             - --locking-file={{ index .Values.customArgs "locking-file" | default ( printf "/tmp/%s_lock" (include "katalyst-agent.fullname" . | replace "-" "_") ) }}
             - --node-name=$(MY_NODE_NAME)
+            - --node-address=$(MY_NODE_ADDRESS)
         {{- range $key, $value := .Values.customArgs }}
             - --{{ $key }}={{ $value }}
         {{- end }}
@@ -49,6 +50,10 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
+            - name: MY_NODE_ADDRESS
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
           image: "{{ .Values.global.image.registry | default .Values.image.registry }}/{{ .Values.global.image.repository | default .Values.image.repository }}:{{ .Values.global.image.tag | default .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{  .Values.global.image.pullPolicy | default .Values.image.pullPolicy }}
           ports:
