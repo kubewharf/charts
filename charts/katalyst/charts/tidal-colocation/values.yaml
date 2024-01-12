@@ -1,0 +1,20 @@
+# Overrides katalyst-controller values
+katalyst-controller:
+  enabled: true
+
+  fullnameOverride: katalyst-controller
+
+  replicaCount: 1
+
+  image:
+    registry: docker.io
+    repository: kubewharf/katalyst-controller
+    pullPolicy: IfNotPresent
+    tag: ""
+
+  customArgs:
+    controllers: "tide"
+    dry-run: false
+    leader-elect: true
+    healthz-enabled: true
+    v: 2

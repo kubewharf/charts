@@ -1,0 +1,42 @@
+# Overrides katalyst-webhook values
+katalyst-webhook:
+  enabled: true
+
+  fullnameOverride: katalyst-webhook
+
+  replicaCount: 1
+
+  image:
+    registry: docker.io
+    repository: kubewharf/katalyst-webhook
+    pullPolicy: IfNotPresent
+    tag: ""
+
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "9316"
+
+  customArgs:
+    webhooks: "node,-vpa,-pod"
+
+# Overrides katalyst-controller values
+katalyst-controller:
+  enabled: true
+
+  fullnameOverride: katalyst-controller
+
+  replicaCount: 1
+
+  image:
+    registry: docker.io
+    repository: kubewharf/katalyst-controller
+    pullPolicy: IfNotPresent
+    tag: ""
+
+  customArgs:
+    controllers: "overcommit,-vpa,-kcc,-spd,-lifecycle"
+    dry-run: false
+    leader-elect: true
+    healthz-enabled: true
+    v: 2
