@@ -20,6 +20,8 @@ rules:
       - config.katalyst.kubewharf.io
       - autoscaling.katalyst.kubewharf.io
       - workload.katalyst.kubewharf.io
+      - overcommit.katalyst.kubewharf.io
+      - tide.katalyst.kubewharf.io
     resources:
       - "*"
     verbs:
@@ -57,6 +59,7 @@ rules:
       - get
       - list
       - watch
+      - patch
   - apiGroups:
       - ""
     resources:
