@@ -28,3 +28,10 @@ jobs:
         uses: helm/chart-releaser-action@v1.4.1
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Run chart-releaser on katalyst subcharts
+        uses: helm/chart-releaser-action@v1.4.1
+        with:
+          charts_dir: charts/katalyst/charts
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

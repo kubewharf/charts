@@ -65,3 +65,37 @@ webhooks:
         scope: '*'
     sideEffects: None
     timeoutSeconds: 30
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  labels:
+    {{- include "katalyst-webhook.labels" . | nindent 4 }}
+  name: katalyst-node-mutating-webhook-configuration
+webhooks:
+  - admissionReviewVersions:
+      - v1beta1
+    clientConfig:
+      caBundle: {{ .Files.Get "keys/ca.crt" }}
+      service:
+        name: {{ include "katalyst-webhook.fullname" . }}
+        namespace: {{ .Release.Namespace }}
+        path: /node
+    failurePolicy: Ignore
+    matchPolicy: Exact
+    name: node-mutation.katalyst.kubewharf.io
+    namespaceSelector: {}
+    objectSelector: {}
+    reinvocationPolicy: Never
+    rules:
+      - apiGroups:
+          - '*'
+        apiVersions:
+          - '*'
+        operations:
+          - UPDATE
+        resources:
+          - nodes/status
+        scope: '*'
+    sideEffects: None
+    timeoutSeconds: 30
