@@ -39,7 +39,7 @@ hostNetwork: false
 customCommand: {}
 
 customArgs:
-  controllers: "*"
+  controllers: "vpa,kcc,spd,lifecycle,monitor,overcommit,tide"
   dry-run: false
   leader-elect: true
   healthz-enabled: true

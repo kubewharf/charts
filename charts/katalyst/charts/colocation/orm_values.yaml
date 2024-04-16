@@ -1,0 +1,69 @@
+global:
+  # Overrides all components' image by global image
+  image: {}
+
+# Overrides katalyst-agent values
+katalyst-agent:
+  enabled: true
+
+  image:
+    registry: cr-pro-cn-guilin-boe.cr.volces.com
+    repository: wz-test/katalyst-agent
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "v0.5.0"
+
+  imagePullSecrets: [ ]
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations: { }
+    name: katalyst-agent
+
+  podAnnotations:
+    "katalyst.kubewharf.io/qos_level": system_cores
+
+  resources: { }
+
+  nodeSelector: { }
+
+  tolerations:
+    - effect: NoSchedule
+      operator: Exists
+
+  affinity: { }
+
+  customCommand: { }
+
+  customArgs:
+    agents: "*"
+    eviction-plugins: "*"
+    enable-reclaim: true
+    cpu-resource-plugin-advisor: true
+    enable-cpu-pressure-eviction: true
+    memory-resource-plugin-advisor: true
+    enable-report-topology-policy: true
+    qrm-socket-dirs: "/var/lib/katalyst/plugin-socks"    # qrm plugins registry to orm
+    pod-resources-server-endpoint: "/var/lib/katalyst/pod-resources/kubelet.sock"    # kubelet reporter get pod resources from orm
+    orm-kubelet-pod-resources-endpoints: "/var/lib/kubelet/pod-resources/kubelet.sock"
+    orm-devices-provider: "kubelet"    # orm get devices resources from kubelet
+    topology-policy-name: "none"    # none / best-effort / restricted / single-numa-node / numeric supported
+    orm-resource-names-map: "resource.katalyst.kubewharf.io/reclaimed_millicpu=cpu,resource.katalyst.kubewharf.io/reclaimed_memory=memory"
+    enable-kubelet-secure-port: true
+
+  hostMountPaths:
+    kubeletLibDir: /var/lib/kubelet
+    runtimeSocketDir: /run/containerd
+    katalystLibDir: /var/lib/katalyst
+
+katalyst-controller: {}
+
+katalyst-webhook: {}
+
+katalyst-scheduler: {}
+
+katalyst-metric: {}
