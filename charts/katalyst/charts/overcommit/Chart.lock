@@ -5,5 +5,11 @@ dependencies:
 - name: katalyst-controller
   repository: file://../controller
   version: 0.5.0
-digest: sha256:2c2fe87bc2821f2255388b55f6ec6151ca0a2a8cba31fc9340d27bef2ae8aa48
-generated: "2024-04-29T12:03:30.148688+08:00"
+- name: katalyst-agent
+  repository: file://../agent
+  version: 0.5.0
+- name: katalyst-scheduler
+  repository: file://../scheduler
+  version: 0.5.0
+digest: sha256:dfbfe1ffc6e560bbed6ce62c133026cf03abfa5c18668c8485a6846f52be558e
+generated: "2024-04-29T15:20:56.974959+08:00"
