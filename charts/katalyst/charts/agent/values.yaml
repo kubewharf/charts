@@ -41,6 +41,9 @@ customArgs:
   enable-reclaim: true
   cpu-resource-plugin-advisor: true
   enable-cpu-pressure-eviction: true
+  pod-resources-server-endpoint: "/var/lib/kubelet/pod-resources/kubelet.sock"
+  enable-kubelet-secure-port: true
+
 
 hostMountPaths:
   kubeletLibDir: /var/lib/kubelet
