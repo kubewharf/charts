@@ -43,6 +43,16 @@ entries:
     version: 0.1.0
   katalyst-agent:
   - apiVersion: v2
+    appVersion: v0.5.0
+    created: "2024-04-29T12:00:13.462379748Z"
+    description: A Helm chart for Katalyst-agent
+    digest: 4036fba80fc38c5ba991e229ea9c5279097b7a874aa84846b9a17dabcf4c07c6
+    name: katalyst-agent
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/katalyst-agent-0.5.0/katalyst-agent-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
     appVersion: v0.4.0
     created: "2024-01-16T10:20:46.129784662Z"
     description: A Helm chart for Katalyst-agent
@@ -53,6 +63,32 @@ entries:
     - https://github.com/kubewharf/charts/releases/download/katalyst-agent-0.4.0/katalyst-agent-0.4.0.tgz
     version: 0.4.0
   katalyst-colocation:
+  - apiVersion: v2
+    appVersion: v0.5.0
+    created: "2024-04-29T12:00:13.598834425Z"
+    dependencies:
+    - name: katalyst-webhook
+      repository: file://../webhook
+      version: 0.5.0
+    - name: katalyst-controller
+      repository: file://../controller
+      version: 0.5.0
+    - name: katalyst-metric
+      repository: file://../metric
+      version: 0.5.0
+    - name: katalyst-scheduler
+      repository: file://../scheduler
+      version: 0.5.0
+    - name: katalyst-agent
+      repository: file://../agent
+      version: 0.5.0
+    description: A Helm chart for Katalyst colocation
+    digest: 93ede36fd51a7c90c4127f50ccd4009f0335381ca3b247f9d9ad271dedb2f953
+    name: katalyst-colocation
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/katalyst-colocation-0.5.0/katalyst-colocation-0.5.0.tgz
+    version: 0.5.0
   - apiVersion: v2
     appVersion: v0.4.0
     created: "2024-01-16T10:20:46.256972077Z"
@@ -81,6 +117,16 @@ entries:
     version: 0.4.0
   katalyst-controller:
   - apiVersion: v2
+    appVersion: v0.5.0
+    created: "2024-04-29T12:00:13.728631275Z"
+    description: A Helm chart for Katalyst-controller
+    digest: 8990f0d113264192a3889cd239eedaac4fa5b6b2c9cf5f2a5f87f4131ac1c06b
+    name: katalyst-controller
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/katalyst-controller-0.5.0/katalyst-controller-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
     appVersion: v0.4.0
     created: "2024-01-16T10:20:46.387296158Z"
     description: A Helm chart for Katalyst-controller
@@ -92,6 +138,16 @@ entries:
     version: 0.4.0
   katalyst-metric:
   - apiVersion: v2
+    appVersion: v0.5.0
+    created: "2024-04-29T12:00:13.866638421Z"
+    description: A Helm chart for Katalyst-metric
+    digest: 7749b7cf9470e52d129ef4a3da544ebfc518036cb5a689d8452c35b2a039ec8b
+    name: katalyst-metric
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/katalyst-metric-0.5.0/katalyst-metric-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
     appVersion: v0.4.0
     created: "2024-01-16T10:20:46.51795592Z"
     description: A Helm chart for Katalyst-metric
@@ -102,6 +158,29 @@ entries:
     - https://github.com/kubewharf/charts/releases/download/katalyst-metric-0.4.0/katalyst-metric-0.4.0.tgz
     version: 0.4.0
   katalyst-overcommit:
+  - apiVersion: v2
+    appVersion: v0.5.0
+    created: "2024-04-29T12:00:13.998575813Z"
+    dependencies:
+    - name: katalyst-webhook
+      repository: file://../webhook
+      version: 0.5.0
+    - name: katalyst-controller
+      repository: file://../controller
+      version: 0.5.0
+    - name: katalyst-agent
+      repository: file://../agent
+      version: 0.5.0
+    - name: katalyst-scheduler
+      repository: file://../scheduler
+      version: 0.5.0
+    description: A Helm chart for Katalyst overcommit
+    digest: 84d0347925756864ed216a0b667661c4800ae3b6e8f209761572c02c71f3278e
+    name: katalyst-overcommit
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/katalyst-overcommit-0.5.0/katalyst-overcommit-0.5.0.tgz
+    version: 0.5.0
   - apiVersion: v2
     appVersion: v0.4.0
     created: "2024-01-16T10:20:46.654494934Z"
@@ -121,6 +200,16 @@ entries:
     version: 0.4.0
   katalyst-scheduler:
   - apiVersion: v2
+    appVersion: v0.5.0
+    created: "2024-04-29T12:00:14.181316294Z"
+    description: A Helm chart for Katalyst-scheduler
+    digest: e24432e4954872df50ad7d328ed6ed2a6fb1b5fea6925c1ee9c499279da74fa4
+    name: katalyst-scheduler
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/katalyst-scheduler-0.5.0/katalyst-scheduler-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
     appVersion: v0.4.0
     created: "2024-01-16T10:20:46.77681041Z"
     description: A Helm chart for Katalyst-scheduler
@@ -131,6 +220,20 @@ entries:
     - https://github.com/kubewharf/charts/releases/download/katalyst-scheduler-0.4.0/katalyst-scheduler-0.4.0.tgz
     version: 0.4.0
   katalyst-tidal-colocation:
+  - apiVersion: v2
+    appVersion: v0.5.0
+    created: "2024-04-29T12:00:14.319153106Z"
+    dependencies:
+    - name: katalyst-controller
+      repository: file://../controller
+      version: 0.5.0
+    description: A Helm chart for Katalyst tidal colocation
+    digest: 63a1dfb41a12bd81800f42b7a812c9f0410cdd2b75edf77df2500ecbaefb5141
+    name: katalyst-tidal-colocation
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/katalyst-tidal-colocation-0.5.0/katalyst-tidal-colocation-0.5.0.tgz
+    version: 0.5.0
   - apiVersion: v2
     appVersion: v0.4.0
     created: "2024-01-16T10:20:46.904980546Z"
@@ -146,6 +249,16 @@ entries:
     - https://github.com/kubewharf/charts/releases/download/katalyst-tidal-colocation-0.4.0/katalyst-tidal-colocation-0.4.0.tgz
     version: 0.4.0
   katalyst-webhook:
+  - apiVersion: v2
+    appVersion: v0.5.0
+    created: "2024-04-29T12:00:14.457961039Z"
+    description: A Helm chart for Katalyst-webhook
+    digest: 2ce9f041b3918bf1fb52d8cde8af5d630add5d4f9f1ea3266d4bf6a290a92d1a
+    name: katalyst-webhook
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/katalyst-webhook-0.5.0/katalyst-webhook-0.5.0.tgz
+    version: 0.5.0
   - apiVersion: v2
     appVersion: v0.4.0
     created: "2024-01-16T10:20:47.02445816Z"
@@ -167,4 +280,4 @@ entries:
     urls:
     - https://github.com/kubewharf/charts/releases/download/malachite-0.1.0/malachite-0.1.0.tgz
     version: 0.1.0
-generated: "2024-01-16T10:20:47.024519765Z"
+generated: "2024-04-29T12:00:14.45799869Z"
