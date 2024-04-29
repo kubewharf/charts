@@ -25,8 +25,8 @@ appVersion: "v0.4.0"
 
 dependencies:
   - name: katalyst-webhook
-    version: 0.4.0
+    version: 0.5.0
     repository: "file://../webhook"
   - name: katalyst-controller
-    version: 0.4.0
+    version: 0.5.0
     repository: "file://../controller"
