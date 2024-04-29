@@ -25,17 +25,17 @@ appVersion: "v0.4.0"
 
 dependencies:
   - name: katalyst-webhook
-    version: 0.4.0
+    version: 0.5.0
     repository: "file://../webhook"
   - name: katalyst-controller
-    version: 0.4.0
+    version: 0.5.0
     repository: "file://../controller"
   - name: katalyst-metric
-    version: 0.4.0
+    version: 0.5.0
     repository: "file://../metric"
   - name: katalyst-scheduler
-    version: 0.4.0
+    version: 0.5.0
     repository: "file://../scheduler"
   - name: katalyst-agent
-    version: 0.4.0
+    version: 0.5.0
     repository: "file://../agent"

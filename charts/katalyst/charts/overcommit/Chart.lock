@@ -1,9 +1,9 @@
 dependencies:
 - name: katalyst-webhook
   repository: file://../webhook
-  version: 0.4.0
+  version: 0.5.0
 - name: katalyst-controller
   repository: file://../controller
-  version: 0.4.0
-digest: sha256:9065c6b424e7d001f87aae94761d240179c95d34b557182611059e46fc50d9ab
-generated: "2024-01-15T20:45:42.189169+08:00"
+  version: 0.5.0
+digest: sha256:2c2fe87bc2821f2255388b55f6ec6151ca0a2a8cba31fc9340d27bef2ae8aa48
+generated: "2024-04-29T12:03:30.148688+08:00"
