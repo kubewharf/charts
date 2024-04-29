@@ -16,9 +16,11 @@ data:
           preFilter:
             enabled:
               - name: QoSAwareNodeResourcesFit
+              - name: NodeOvercommitment
           filter:
             enabled:
               - name: QoSAwareNodeResourcesFit
+              - name: NodeOvercommitment
           score:
             enabled:
               - name: QoSAwareNodeResourcesFit
@@ -31,6 +33,7 @@ data:
           reserve:
             enabled:
               - name: QoSAwareNodeResourcesFit
+              - name: NodeOvercommitment
         pluginConfig:
           - name: NodeResourcesFit
             args:
