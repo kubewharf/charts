@@ -1,0 +1,18 @@
+dependencies:
+- name: katalyst-webhook
+  repository: file://../webhook
+  version: 0.5.0
+- name: katalyst-controller
+  repository: file://../controller
+  version: 0.5.0
+- name: katalyst-metric
+  repository: file://../metric
+  version: 0.5.0
+- name: katalyst-scheduler
+  repository: file://../scheduler
+  version: 0.5.0
+- name: katalyst-agent
+  repository: file://../agent
+  version: 0.5.0
+digest: sha256:5cad53c88876515db3c663e83e11a2513560c2fb630e7cc8742efe8511c4779d
+generated: "2024-05-07T11:23:49.524534+08:00"

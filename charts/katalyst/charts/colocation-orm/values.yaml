@@ -7,11 +7,11 @@ katalyst-agent:
   enabled: true
 
   image:
-    registry: cr-pro-cn-guilin-boe.cr.volces.com
-    repository: wz-test/katalyst-agent
+    registry: docker.io
+    repository: kubewharf/katalyst-agent
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "v0.5.0"
+    tag: ""
 
   imagePullSecrets: [ ]
   nameOverride: ""
