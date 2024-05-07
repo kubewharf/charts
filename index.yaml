@@ -115,6 +115,33 @@ entries:
     urls:
     - https://github.com/kubewharf/charts/releases/download/katalyst-colocation-0.4.0/katalyst-colocation-0.4.0.tgz
     version: 0.4.0
+  katalyst-colocation-orm:
+  - apiVersion: v2
+    appVersion: v0.5.0
+    created: "2024-05-07T07:02:19.588031794Z"
+    dependencies:
+    - name: katalyst-webhook
+      repository: file://../webhook
+      version: 0.5.0
+    - name: katalyst-controller
+      repository: file://../controller
+      version: 0.5.0
+    - name: katalyst-metric
+      repository: file://../metric
+      version: 0.5.0
+    - name: katalyst-scheduler
+      repository: file://../scheduler
+      version: 0.5.0
+    - name: katalyst-agent
+      repository: file://../agent
+      version: 0.5.0
+    description: A Helm chart for Katalyst colocation
+    digest: aa720a16a98088c096e45afa3843e4620293b7cfc04494777f4465e88b0ce9e2
+    name: katalyst-colocation-orm
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/katalyst-colocation-orm-0.5.0/katalyst-colocation-orm-0.5.0.tgz
+    version: 0.5.0
   katalyst-controller:
   - apiVersion: v2
     appVersion: v0.5.0
@@ -280,4 +307,4 @@ entries:
     urls:
     - https://github.com/kubewharf/charts/releases/download/malachite-0.1.0/malachite-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-29T12:00:14.45799869Z"
+generated: "2024-05-07T07:02:19.588065286Z"
