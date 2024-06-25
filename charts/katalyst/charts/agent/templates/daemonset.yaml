@@ -78,6 +78,10 @@ spec:
               readOnly: true
             - mountPath: /tmp
               name: host-tmp-dir
+            {{- if and (index .Values.customArgs "orm-work-mode") (eq (index .Values.customArgs "orm-work-mode") "nri") }}
+            - mountPath: /var/run/nri
+              name: host-nri-dir
+            {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -114,4 +118,10 @@ spec:
             path: /tmp
             type: ""
           name: host-tmp-dir
+        {{- if and (index .Values.customArgs "orm-work-mode") (eq (index .Values.customArgs "orm-work-mode") "nri") }}
+        - hostPath:
+            path: /var/run/nri
+            type: DirectoryOrCreate
+          name: host-nri-dir
+        {{- end }}
 
