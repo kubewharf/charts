@@ -22,6 +22,7 @@ rules:
       - workload.katalyst.kubewharf.io
       - overcommit.katalyst.kubewharf.io
       - tide.katalyst.kubewharf.io
+      - recommendation.katalyst.kubewharf.io
     resources:
       - "*"
     verbs:
