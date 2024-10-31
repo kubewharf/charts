@@ -1,0 +1,6 @@
+dependencies:
+- name: katalyst-controller
+  repository: file://../controller
+  version: 0.5.12
+digest: sha256:7c2477c06e5dc60c6d9c3198d6d44e9406055e98a3e8b3c135b8ab18dc7c4b55
+generated: "2024-10-30T17:02:50.631845+08:00"
