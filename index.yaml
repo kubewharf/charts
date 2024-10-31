@@ -144,6 +144,16 @@ entries:
     version: 0.5.0
   katalyst-controller:
   - apiVersion: v2
+    appVersion: v0.5.12
+    created: "2024-10-31T11:13:50.465420111Z"
+    description: A Helm chart for Katalyst-controller
+    digest: 2de2b118d0dc5ed693d4c3e25ebdfa27c2243225cbc7b94c18fc8f727de38d64
+    name: katalyst-controller
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/katalyst-controller-0.5.12/katalyst-controller-0.5.12.tgz
+    version: 0.5.12
+  - apiVersion: v2
     appVersion: v0.5.0
     created: "2024-04-29T12:00:13.728631275Z"
     description: A Helm chart for Katalyst-controller
@@ -225,6 +235,21 @@ entries:
     urls:
     - https://github.com/kubewharf/charts/releases/download/katalyst-overcommit-0.4.0/katalyst-overcommit-0.4.0.tgz
     version: 0.4.0
+  katalyst-resource-recommend:
+  - apiVersion: v2
+    appVersion: v0.5.0
+    created: "2024-10-31T11:13:50.569518784Z"
+    dependencies:
+    - name: katalyst-controller
+      repository: file://../controller
+      version: 0.5.12
+    description: A Helm chart for Katalyst resource recommend
+    digest: 66448199a125856dd79c17bd2252a18423d515dd53986d3a06da61a605c520b5
+    name: katalyst-resource-recommend
+    type: application
+    urls:
+    - https://github.com/kubewharf/charts/releases/download/katalyst-resource-recommend-0.5.0/katalyst-resource-recommend-0.5.0.tgz
+    version: 0.5.0
   katalyst-scheduler:
   - apiVersion: v2
     appVersion: v0.5.0
@@ -307,4 +332,4 @@ entries:
     urls:
     - https://github.com/kubewharf/charts/releases/download/malachite-0.1.0/malachite-0.1.0.tgz
     version: 0.1.0
-generated: "2024-05-07T07:02:19.588065286Z"
+generated: "2024-10-31T11:13:50.569561894Z"
